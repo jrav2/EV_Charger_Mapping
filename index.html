@@ -110,19 +110,19 @@
 
         // load data and add as layer
         async function geojsonFetch() {
-            let response = await fetch('assets/API_1.geojson');
-            let API_1 = await response.json();
+            let response = await fetch('assets/Public_EV_Charging_Stations.geojson');
+            let Public_EV_Charging_Stations = await response.json();
 
             map.on('load', function loadingData() {
-                map.addSource('API_1', {
+                map.addSource('Public_EV_Charging_Stations', {
                     type: 'geojson',
-                    data: API_1
+                    data: Public_EV_Charging_Stations
                 });
 
                 map.addLayer({
-                    'id': 'API_1_layer',
+                    'id': 'Public_EV_Charging_Stations_layer',
                     'type': 'fill',
-                    'source': 'API_1',
+                    'source': 'Public_EV_Charging_Stations',
                     'paint': {
                         'fill-color': [
                             'step',
@@ -191,7 +191,7 @@
 
             map.on('mousemove', ({point}) => {
                 const state = map.queryRenderedFeatures(point, {
-                    layers: ['API_1_layer']
+                    layers: ['Public_EV_Charging_Stations_layer']
                 });
                 document.getElementById('text-description').innerHTML = state.length ?
                     `<h3>${state[0].properties.name}</h3><p><strong><em>${state[0].properties.density}</strong> people per square mile</em></p>` :
