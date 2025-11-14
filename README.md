@@ -6,4 +6,4 @@ To update our local repositories using the cmd prompt, see
 [Lab 1 Instructions](https://github.com/jakobzhao/geog328/tree/main/labs/lab01)
 
 On Windows, can use the following commands on repository root: 
-**git checkout** --force and **git pull**
+**git checkout --force** and **git pull**
