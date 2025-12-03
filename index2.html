@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>EV Charging Station Finder — Washington</title>
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+    <style>
+      html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
+      #map{position:fixed;inset:0;width:100%;height:100%;}
+
+      /* Top-left controls */
+      .topbar{
+        position:fixed;left:16px;top:12px;z-index:1400;display:flex;gap:8px;align-items:center
+      }
+
+      .title {
+        background:rgba(255,255,255,0.95);padding:10px 14px;border-radius:8px;font-weight:700;color:#1f2937;box-shadow:0 4px 14px rgba(2,6,23,0.08);
+      }
+
+      .search {
+        display:flex;align-items:center;background:rgba(255,255,255,0.95);padding:6px;border-radius:8px;box-shadow:0 4px 14px rgba(2,6,23,0.08);
+      }
+
+      .search input{border:0;outline:none;padding:6px 8px;width:260px;font-size:14px}
+      .search button{border:0;background:#2563eb;color:white;padding:6px 10px;border-radius:6px;cursor:pointer;margin-left:6px}
+
+      /* Info box at bottom */
+      .info{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:1400;padding:12px 18px;background:#fff;border-radius:8px;box-shadow:0 6px 24px rgba(16,24,40,0.16);display:none;font-weight:600}
+
+    </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <div class="topbar">
+    <div class="title">EV Charging Station Finder — Washington</div>
+    <div class="search" style="margin-left:8px">
+      <input id="searchInput" placeholder="Search location or address" aria-label="Search location" />
+      <button id="searchBtn">Search</button>
+    </div>
+  </div>
+
+  <div id="info" class="info"></div>
+
+  <script>
+    // Set your Mapbox public token here
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWpvdSIsImEiOiJjbWh5ZWZ6N2gwYWluMmptdTVlczZ5NXEzIn0.Ha9WIGJy4xJyUiZSR5xbNg';
+
+    // Create the map
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [-120.5, 47.5],
+      zoom: 6
+    });
+
+    // Washington bounding box (approx)
+    const WA_BBOX = [-124.846, 45.544, -116.915, 49.002]; // [west, south, east, north]
+
+    // Will hold station features
+    let stations = [];
+
+    // Helper to remove a layer+source if exists
+    function removeLayerIfExists(id) {
+      if (map.getLayer(id)) map.removeLayer(id);
+      if (map.getSource(id)) map.removeSource(id);
+    }
+
+    // Handle a selected location (lng, lat): add click marker, find nearest, highlight nearest, show info
+    function handleLocation(lng, lat) {
+      if (!stations.length) return;
+      const clickPoint = turf.point([lng, lat]);
+      const stationsCollection = turf.featureCollection(stations);
+      const nearest = turf.nearestPoint(clickPoint, stationsCollection);
+      const distance = turf.distance(clickPoint, nearest, { units: 'miles' });
+
+      // Switch click marker
+      removeLayerIfExists('click-point');
+      map.addSource('click-point', { type: 'geojson', data: clickPoint });
+      map.addLayer({
+        id: 'click-point',
+        type: 'circle',
+        source: 'click-point',
+        paint: {
+          'circle-radius': 10,
+          'circle-color': '#2196F3',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#1565C0',
+          'circle-opacity': 0.95
+        }
+      });
+
+      // Switch closest station highlight
+      removeLayerIfExists('closest-station');
+      map.addSource('closest-station', { type: 'geojson', data: nearest });
+      map.addLayer({
+        id: 'closest-station',
+        type: 'circle',
+        source: 'closest-station',
+        paint: {
+          'circle-radius': 12,
+          'circle-color': '#FF9800',
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#E65100',
+          'circle-opacity': 1
+        }
+      });
+
+      // Show info
+      const info = document.getElementById('info');
+      const name = nearest.properties && (nearest.properties.Station_Na || nearest.properties.StationName || 'Unnamed');
+      info.innerHTML = `Closest station: <strong>${name}</strong> — <strong>${distance.toFixed(2)} miles</strong>`;
+      info.style.display = 'block';
+    }
+
+    // Geocode using Mapbox Geocoding API (returns first result or null)
+    async function geocode(query) {
+      if (!query) return null;
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxgl.accessToken}&limit=1`;
+      try {
+        const res = await fetch(url);
+        const json = await res.json();
+        if (json && json.features && json.features.length) return json.features[0];
+      } catch (err) { console.error('Geocode error', err); }
+      return null;
+    }
+
+    map.on('load', async () => {
+      // Fit map to WA bounds on load
+      map.fitBounds([[WA_BBOX[0], WA_BBOX[1]], [WA_BBOX[2], WA_BBOX[3]]], { padding: 40 });
+
+      // Load EV stations GeoJSON
+      try {
+        const resp = await fetch('./assets/Public_EV_Charging_Stations.geojson');
+        const geojson = await resp.json();
+        stations = geojson.features;
+
+        // Try to load an exact WA state boundary from a public source
+        // We'll fetch a US states GeoJSON and extract Washington by name
+        let waFeature = null;
+        try {
+          const statesResp = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json');
+          const states = await statesResp.json();
+          waFeature = states.features.find(f => (f.properties && (f.properties.name === 'Washington' || f.properties.NAME === 'Washington')));
+        } catch (err) {
+          console.warn('Could not fetch US states boundary; falling back to convex hull approximation', err);
+        }
+
+        let worldPoly = null;
+
+        if (waFeature && waFeature.geometry) {
+          // Extract outer rings from WA polygon(s)
+          const outerRings = [];
+          if (waFeature.geometry.type === 'Polygon') {
+            outerRings.push(waFeature.geometry.coordinates[0]);
+          } else if (waFeature.geometry.type === 'MultiPolygon') {
+            waFeature.geometry.coordinates.forEach(poly => {
+              if (poly && poly.length && poly[0]) outerRings.push(poly[0]);
+            });
+          }
+
+          // Build world polygon with a hole for each outer ring of WA
+          const worldOuter = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
+          worldPoly = {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [worldOuter, ...outerRings]
+            }
+          };
+        } else {
+          // Fallback: convex hull + small buffer
+          const stationsCollection = turf.featureCollection(stations);
+          let hull = turf.convex(stationsCollection);
+          if (!hull) hull = turf.bboxPolygon(WA_BBOX);
+          const waShape = turf.buffer(hull, 20, { units: 'miles' });
+          worldPoly = {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]],
+                waShape.geometry.coordinates[0]
+              ]
+            }
+          };
+        }
+
+        // Add mask first so station symbols are drawn above it
+        if (map.getSource('mask')) map.removeSource('mask');
+        removeLayerIfExists('mask-layer');
+        map.addSource('mask', { type: 'geojson', data: worldPoly });
+        map.addLayer({
+          id: 'mask-layer',
+          type: 'fill',
+          source: 'mask',
+          paint: { 'fill-color': '#ffffff', 'fill-opacity': 0.6 }
+        });
+
+        // Add stations source and layer on top
+        map.addSource('stations', { type: 'geojson', data: geojson });
+        map.addLayer({
+          id: 'stations-layer',
+          type: 'circle',
+          source: 'stations',
+          paint: {
+            'circle-radius': 6,
+            'circle-color': '#4CAF50',
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#2E7D32',
+            'circle-opacity': 0.95
+          }
+        });
+
+      } catch (err) {
+        console.error('Failed to load stations', err);
+      }
+
+    });
+
+    // Click on map to select location
+    map.on('click', (e) => {
+      handleLocation(e.lngLat.lng, e.lngLat.lat);
+    });
+
+    // Search UI
+    document.getElementById('searchBtn').addEventListener('click', async () => {
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) return;
+      const result = await geocode(q);
+      if (!result) { alert('Location not found'); return; }
+
+      const [lng, lat] = result.center;
+      // center map smoothly and then handle location
+      map.flyTo({ center: [lng, lat], zoom: 12 });
+      // small delay to allow map to center, then process
+      setTimeout(() => handleLocation(lng, lat), 400);
+    });
+
+    // Allow pressing Enter in input to trigger search
+    document.getElementById('searchInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('searchBtn').click();
+    });
+
+  </script>
+</body>
+</html>
