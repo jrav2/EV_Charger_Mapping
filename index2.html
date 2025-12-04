@@ -18,25 +18,30 @@
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
 <style>
-    /* Map sizing */
+    /* Optional: top controls for search/input */
+    .sidebar {
+        position: absolute;
+        width: 25%;
+        height: 525px;
+        top: 250px;
+        left: 0;
+        padding: 1rem;
+        overflow-y: scroll;
+        background-color: #f4f3e7;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        z-index: 100;
+    }
+
+        /* Map sizing */
     #map {
-        width: 100%;
+        width: 75%;
+        left: 25%;
         /*height: 600px;*/ /* same height as Leaflet page */
         height: 525px;/*Changed so map doesn't bleed past page*/
         /*margin-top: 20px;*/
              /* leaves space for navbar */
-    }
 
-    /* Optional: top controls for search/input */
-    .topbar {
-        position: absolute;
-        top: 115px;
-        right: 10px;  /* move it to the right */
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        z-index: 1400;
-        flex-direction: row-reverse; /* optional: keep title and search aligned nicely */
+        z-index: 10;
     }
 
     .title {
@@ -47,6 +52,14 @@
         color: #1f2937;
         box-shadow: 0 4px 14px rgba(2,6,23,0.08);
     }
+
+    /* Listing area in the sidebar */
+    .store-count { margin-top: 8px; font-weight: 700; }
+    .listings { margin-top: 8px; }
+    .store-item { padding: 8px; border-radius:6px; background: #fff; margin-bottom:8px; box-shadow: 0 2px 6px rgba(2,6,23,0.06); cursor: pointer }
+    .store-item:hover { transform: translateY(-2px); }
+    .store-name { margin:0 0 4px 0; font-size:14px }
+    .store-details { font-size:13px; color:#334155 }
 
     .search {
         display: flex;
@@ -103,12 +116,15 @@
 <div id="map"></div>
 
 <!-- Topbar for search -->
-<div class="topbar">
+<div class="sidebar">
     <div class="title">Search a Location</div>
     <div class="search">
         <input id="searchInput" placeholder="Search location or address" aria-label="Search location" />
         <button id="searchBtn">Search</button>
     </div>
+
+    <div id="store-count" class="store-count">Stations: 0</div>
+    <div id="listings" class="listings" aria-live="polite"></div>
 </div>
 
 <!-- Info box -->
@@ -132,6 +148,55 @@
     function removeLayerIfExists(id) {
         if (map.getLayer(id)) map.removeLayer(id);
         if (map.getSource(id)) map.removeSource(id);
+    }
+
+    // Small helper to escape HTML when inserting property text into the sidebar
+    function escapeHtml(str) {
+        if (!str && str !== 0) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // Build the sidebar location list from the `stations` array
+    function buildLocationList() {
+        const listings = document.getElementById('listings');
+        const storeCount = document.getElementById('store-count');
+        if (!listings || !storeCount) return;
+
+        // Update count
+        storeCount.textContent = `Stations: ${stations.length}`;
+
+        // Clear existing
+        listings.innerHTML = '';
+
+        stations.forEach((feature, index) => {
+            const props = feature.properties || {};
+            const name = props.Station_Na || props.StationName || props.name || 'Unnamed Station';
+            const addr = props.Address || props.address || '';
+            const city = props.City || props.CityName || '';
+
+            const listing = document.createElement('div');
+            listing.className = 'store-item';
+            listing.dataset.index = index;
+            listing.innerHTML = `
+                <h4 class="store-name">${escapeHtml(name)}</h4>
+                <div class="store-details">${escapeHtml(addr)} ${escapeHtml(city)}</div>
+            `;
+
+            listing.addEventListener('click', () => {
+                if (feature.geometry && feature.geometry.coordinates) {
+                    const [lng, lat] = feature.geometry.coordinates;
+                    map.flyTo({ center: [lng, lat], zoom: 14 });
+                    handleLocation(lng, lat);
+                }
+            });
+
+            listings.appendChild(listing);
+        });
     }
 
     function handleLocation(lng, lat) {
@@ -194,6 +259,7 @@
     map.on('load', async () => {
         map.fitBounds([[WA_BBOX[0], WA_BBOX[1]], [WA_BBOX[2], WA_BBOX[3]]], { padding: 40 });
 
+        
         // Load EV stations GeoJSON
         try {
             const resp = await fetch('./assets/Public_EV_Charging_Stations.geojson');
@@ -215,6 +281,10 @@
                 }
             });
 
+            // Populate the sidebar list now that stations are loaded
+            try { buildLocationList(); } catch (e) { console.warn('buildLocationList failed', e); }
+
+          
         } catch (err) {
             console.error('Failed to load stations', err);
         }
