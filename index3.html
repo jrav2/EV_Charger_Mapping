@@ -133,12 +133,14 @@
 
 <script>
     // Mapbox token
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWpvdSIsImEiOiJjbWh5ZWZ6N2gwYWluMmptdTVlczZ5NXEzIn0.Ha9WIGJy4xJyUiZSR5xbNg';
+    //mapboxgl.accessToken = 'pk.eyJ1IjoibWpvdSIsImEiOiJjbWh5ZWZ6N2gwYWluMmptdTVlczZ5NXEzIn0.Ha9WIGJy4xJyUiZSR5xbNg';
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiam9oYW5ucjIiLCJhIjoiY21obDBicm84MTN6MzJxb3EyaTk2MzcyOCJ9.QQ-NbzYXscnvoU23EgUcyw'
 
     // Initialize Mapbox map centered on Washington
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
+        //style: 'mapbox://styles/mapbox/streets-v12',
+        style: 'mapbox://styles/johannr2/cmip03uix00n201r96oa0c6ba',
         center: [-120.5, 47.5],
         zoom: 7
     });

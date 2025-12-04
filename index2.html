@@ -24,6 +24,10 @@
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
   </script>
 
+  <!-- Mapbox CSS and JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.17.0-beta.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.17.0-beta.1/mapbox-gl.js"></script>
+
   <style>
     #map {
       margin-top: 20px;
@@ -55,9 +59,12 @@
     const map = L.map('map').setView([47.5, -120.5], 7);
 
     // Add basemap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiam9oYW5ucjIiLCJhIjoiY21obDBicm84MTN6MzJxb3EyaTk2MzcyOCJ9.QQ-NbzYXscnvoU23EgUcyw';
+    //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://api.mapbox.com/styles/v1/johannr2/cmip03uix00n201r96oa0c6ba/tiles/256/{z}/{x}/{y}@2x?access_token=' + mapboxgl.accessToken, {
       maxZoom: 19,
-      attribution: "OpenStreetMap"
+      //attribution: "OpenStreetMap"
+      attribution: "Mapbox"
     }).addTo(map);
 
     // Load GeoJSON
