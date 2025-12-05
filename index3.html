@@ -169,19 +169,40 @@
             .replace(/'/g, '&#39;');
     }
 
-    // Build the sidebar location list from the `stations` array
-    function buildLocationList() {
+    // Build the sidebar location list showing closest 5 stations to a selected point
+    function buildLocationList(centerLngLat) {
         const listings = document.getElementById('listings');
         const storeCount = document.getElementById('store-count');
         if (!listings || !storeCount) return;
 
+        // If no location provided, clear the sidebar
+        if (!centerLngLat || !Array.isArray(centerLngLat) || centerLngLat.length !== 2) {
+            storeCount.textContent = '';
+            listings.innerHTML = '';
+            return;
+        }
+
+        // Calculate distance to all stations and sort by distance
+        const clickPoint = turf.point(centerLngLat);
+        const stationsWithDistance = stations.map((feature, idx) => {
+            const coords = feature.geometry && feature.geometry.coordinates;
+            const dist = coords ? turf.distance(clickPoint, turf.point(coords), { units: 'miles' }) : Infinity;
+            return { feature, distance: dist, idx };
+        });
+
+        // Sort by distance and get top 5
+        const top5 = stationsWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 5);
+
         // Update count
-        storeCount.textContent = `Stations: ${stations.length}`;
+        storeCount.textContent = `Closest 5 Stations`;
 
         // Clear existing
         listings.innerHTML = '';
 
-        stations.forEach((feature, index) => {
+        // Display top 5
+        top5.forEach((item, rank) => {
+            const feature = item.feature;
+            const distance = item.distance;
             const props = feature.properties || {};
             const name = props.Station_Na || props.StationName || props.name || 'Unnamed Station';
             const addr = props.Address || props.address || '';
@@ -189,10 +210,11 @@
 
             const listing = document.createElement('div');
             listing.className = 'store-item';
-            listing.dataset.index = index;
+            listing.dataset.index = item.idx;
             listing.innerHTML = `
-                <h4 class="store-name">${escapeHtml(name)}</h4>
+                <h4 class="store-name">#${rank + 1} ${escapeHtml(name)}</h4>
                 <div class="store-details">${escapeHtml(addr)} ${escapeHtml(city)}</div>
+                <div style="font-size:12px;color:#2563eb;font-weight:600;margin-top:4px">${distance.toFixed(2)} mi away</div>
             `;
 
             listing.addEventListener('click', () => {
@@ -251,6 +273,9 @@
         const name = nearest.properties && (nearest.properties.Station_Na || nearest.properties.StationName || 'Unnamed');
         info.innerHTML = `Closest station: <strong>${name}</strong> — <strong>${distance.toFixed(2)} miles</strong>`;
         info.style.display = 'block';
+
+        // Update sidebar with top 5 closest stations
+        buildLocationList([lng, lat]);
     }
 
     async function geocode(query) {
