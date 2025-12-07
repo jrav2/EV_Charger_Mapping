@@ -8,4 +8,4 @@ To update our local repositories using the cmd prompt, see
 On Windows, can use the following commands on repository root: 
 **git checkout --force** and **git pull**
 
-https://geo.wa.gov/datasets/wa-geoservices::public-ev-charging-stations/explore?location=47.236826%2C-120.853210%2C7.56
+https://geo.wa.gov
