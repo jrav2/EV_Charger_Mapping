@@ -26,7 +26,7 @@
 
     .stations-table th, .stations-table td {
         padding: 12px 15px;
-        text-align: left;
+        text-align: left;   
         border-bottom: 1px solid #ddd;
     }
 
@@ -61,13 +61,15 @@
 <body>
     <!-- Navigation Bar -->
     <nav class="topnav" id="myTopnav">
-        <div class="logo">EV HUB</div>
+        <div class="logo">
+            <img src="imgs/favicon.png" alt="EV HUB Logo">
+        </div>
         <div class="nav-links" id="navLinks">
             <a href="testhomepage.html">Home</a>
-            <a href="index2.html" class="active">All Stations</a>
-            <a href="index3.html">Station Finder</a>
-            <a href="index4.html">Density</a>
-            <a href="index5.html">Charger Types</a>
+            <a href="testindex2.html" class="active">All Stations</a>
+            <a href="testindex3.html">Station Finder</a>
+            <a href="testindex4.html">Station Density Map</a>
+            <a href="testindex5.html">Charger Types</a>
         </div>
         <a href="javascript:void(0);" class="icon" id="navToggle">
             <i class="fa fa-bars"></i>
@@ -120,19 +122,23 @@
     });
 
     // -----------------------------
-    // MAP & LEGEND LOGIC
+    // MAP & LEGEND LOGIC (Mapbox style)
     // -----------------------------
     document.addEventListener('DOMContentLoaded', function() {
         const map = L.map('stations-map').setView([47.5, -120.5], 7);
 
-        // Base tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+        const accessToken = 'pk.eyJ1Ijoiam9oYW5ucjIiLCJhIjoiY21obDBicm84MTN6MzJxb3EyaTk2MzcyOCJ9.QQ-NbzYXscnvoU23EgUcyw';
+        const mapboxStyle = 'https://api.mapbox.com/styles/v1/johannr2/cmip03uix00n201r96oa0c6ba/tiles/256/{z}/{x}/{y}@2x?access_token=' + accessToken;
+
+        // Base tile layer with Mapbox
+        L.tileLayer(mapboxStyle, {
+            maxZoom: 19,
+            attribution: 'Mapbox'
         }).addTo(map);
 
         // Colors for charger types
         const colorMap = {
-            "Level 1": "#66cc66",
+            "Level 1": "#E1341E",
             "Level 2": "#00cc66",
             "DC Fast": "#0066ff"
         };
@@ -161,9 +167,12 @@
                     onEachFeature: (feature, layer) => {
                         const props = feature.properties;
                         let type = props.EV_DC_Fast > 0 ? "DC Fast" :
-                                   props.EV_Level2_ > 0 ? "Level 2" : "Level 1";
+                                props.EV_Level2_ > 0 ? "Level 2" : "Level 1";
 
-                        layer.bindPopup(`<strong>${props.Station_Na}</strong><br>${props.Address || ""}<br>Type: ${type}`);
+                        // Combine Address and Zipcode if Zipcode exists
+                        const addressWithZip = props.Zipcode ? `${props.Address}, ${props.Zipcode}` : props.Address;
+
+                        layer.bindPopup(`<strong>${props.Station_Na}</strong><br>${addressWithZip}<br>Type: ${type}`);
                     }
                 }).addTo(map);
             });

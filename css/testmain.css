@@ -207,15 +207,16 @@
   }
   
   .map-card {
-  background: linear-gradient(145deg, #151932 0%, #1a1f3a 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 40px;
-  transition: all 0.4s;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  }
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;  /* pushes button to bottom */
+    align-items: center;             /* centers content horizontally */
+    text-align: center;
+    background: linear-gradient(145deg, #151932 0%, #1a1f3a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    }
   
   .map-card:hover {
   transform: translateY(-10px);
@@ -249,10 +250,10 @@
   }
   
   .map-card .btn {
-  width: 100%;
-  padding: 15px;
-  font-size: 0.9rem;
-  }
+    width: auto;       /* keeps button width natural */
+    min-width: 150px;  /* optional: minimum size */
+    margin-top: 20px;  /* adds spacing from text above */
+}
   
   /* Features Section */
   .features-section {
@@ -385,6 +386,7 @@
   }
 
 /* All Stations Section */
-  
+     
+
 }
   

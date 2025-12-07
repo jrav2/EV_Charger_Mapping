@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Charger Types - Washington EV Charging Hub</title>
+    <link rel="icon" type="image/png" href="imgs/favicon.png">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/testmain.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- Mapbox CSS and JS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.17.0-beta.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.17.0-beta.1/mapbox-gl.js"></script>
+    
+    <style>
+        /* Map Container */
+        .map-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        #map { 
+            width: 100%;
+            height: 600px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Legend */
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(21, 25, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            min-width: 280px;
+        }
+
+        .legend h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #b8bac9;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 35px;
+            height: 20px;
+            margin-right: 12px;
+            border-radius: 4px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 11px;
+            color: #00d4ff;
+            line-height: 1.5;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(21, 25, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            max-width: 320px;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .info-panel p {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #b8bac9;
+        }
+
+        .info-panel .tip {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            color: #00d4ff;
+        }
+
+        /* Mapbox Popup Styling */
+        .mapboxgl-popup-content {
+            background: rgba(21, 25, 50, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            color: #ffffff;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .mapboxgl-popup-content strong {
+            color: #00d4ff;
+        }
+
+        .mapboxgl-popup-content b {
+            color: #7b2ff7;
+        }
+
+        .mapboxgl-popup-tip {
+            border-top-color: rgba(21, 25, 50, 0.98) !important;
+            border-bottom-color: rgba(21, 25, 50, 0.98) !important;
+        }
+
+        .mapboxgl-popup-close-button {
+            color: #00d4ff;
+            font-size: 20px;
+        }
+
+        .mapboxgl-popup-close-button:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .map-container {
+                padding: 0 10px;
+            }
+
+            #map {
+                height: 500px;
+            }
+
+            .legend {
+                bottom: 10px;
+                right: 10px;
+                padding: 15px;
+                min-width: 250px;
+            }
+
+            .info-panel {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 15px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="topnav" id="myTopnav">
+        <div class="logo">
+            <img src="imgs/favicon.png" alt="EV HUB Logo">
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="testhomepage.html">Home</a>
+            <a href="testindex2.html">All Stations</a>
+            <a href="testindex3.html">Station Finder</a>
+            <a href="testindex4.html">Station Density Map</a>
+            <a href="testindex5.html" class="active">Charger Types</a>
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="toggleNav()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">⚡ CHARGER TYPES</div>
+            <h1>EV CHARGERS BY TYPE & POWER</h1>
+            <p class="subtitle">Explore Washington State's charging infrastructure by charger type and power level</p>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="map-container">
+            <!-- Info Panel -->
+            <div class="info-panel">
+                <h3>Charger Categories</h3>
+                <p><strong>DC Fast (Level 3):</strong> Fastest charging, typically 30-60 minutes for 80% charge</p>
+                <p><strong>Level 2:</strong> Standard charging, 3-8 hours for full charge</p>
+                <p><strong>Level 1:</strong> Slowest, uses standard outlet</p>
+                <p class="tip">Click clusters to zoom • Hover over stations for details</p>
+            </div>
+
+            <!-- Map -->
+            <div id="map"></div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <h4>Charger Type & Power</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#ff4d4d;"></div>
+                    <span>DC Fast (Level 3) – 50+kW</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#ff8c1a;"></div>
+                    <span>Level 2 – 7–22 kW</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#4da6ff;"></div>
+                    <span>Level 2 – ≤6 kW (slow)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#cccccc;"></div>
+                    <span>Unknown / Coming Soon</span>
+                </div>
+                <div class="legend-note">
+                    Circles = cluster count<br>
+                    Click clusters to zoom in
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Toggle navigation
+        function toggleNav() {
+            var navLinks = document.getElementById("navLinks");
+            navLinks.classList.toggle("active");
+        }
+
+        // Initialize Mapbox
+        mapboxgl.accessToken = 'pk.eyJ1Ijoiam9oYW5ucjIiLCJhIjoiY21obDBicm84MTN6MzJxb3EyaTk2MzcyOCJ9.QQ-NbzYXscnvoU23EgUcyw';
+        
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/johannr2/cmip03uix00n201r96oa0c6ba', 
+            center: [-120.316, 47.602],
+            zoom: 6.3
+        });
+
+        map.on('load', () => {
+            map.addSource('ev', {
+                type: 'geojson',
+                data: 'assets/Public_EV_Charging_Stations.geojson',
+                cluster: true,
+                clusterMaxZoom: 14,
+                clusterRadius: 50
+            });
+
+            // Clusters
+            map.addLayer({
+                id: 'clusters',
+                type: 'circle',
+                source: 'ev',
+                filter: ['has', 'point_count'],
+                paint: {
+                    'circle-color': [
+                        'step',
+                        ['get', 'point_count'],
+                        '#51bbd6',
+                        10, '#f1f075',
+                        50, '#f28cb1'
+                    ],
+                    'circle-radius': [
+                        'step',
+                        ['get', 'point_count'],
+                        20, 10, 30, 30, 40
+                    ],
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#fff'
+                }
+            });
+
+            // Cluster count labels
+            map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'ev',
+                filter: ['has', 'point_count'],
+                layout: {
+                    'text-field': '{point_count_abbreviated}',
+                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                    'text-size': 14
+                },
+                paint: { 'text-color': '#000' }
+            });
+
+            // Individual chargers
+            map.addLayer({
+                id: 'unclustered-point',
+                type: 'circle',
+                source: 'ev',
+                filter: ['!', ['has', 'point_count']],
+                paint: {
+                    'circle-radius': 10,
+                    'circle-color': [
+                        'match',
+                        ['get', 'EV_Level'],
+                        'DC Fast', '#ff4d4d',
+                        'Level 2', '#ff8c1a',
+                        'Level 1', '#4da6ff',
+                        '#cccccc'
+                    ],
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#fff'
+                }
+            });
+
+            // Click cluster to zoom
+            map.on('click', 'clusters', (e) => {
+                const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                const clusterId = features[0].properties.cluster_id;
+                map.getSource('ev').getClusterExpansionZoom(clusterId, (err, zoom) => {
+                    if (!err) {
+                        map.easeTo({
+                            center: features[0].geometry.coordinates,
+                            zoom: zoom
+                        });
+                    }
+                });
+            });
+
+            // Hover cursor
+            map.on('mouseenter', 'clusters', () => map.getCanvas().style.cursor = 'pointer');
+            map.on('mouseleave', 'clusters', () => map.getCanvas().style.cursor = '');
+
+            // Popup on individual charger
+            const popup = new mapboxgl.Popup({
+                closeButton: false,
+                closeOnClick: false,
+                offset: 15
+            });
+
+            map.on('mousemove', 'unclustered-point', (e) => {
+                map.getCanvas().style.cursor = 'pointer';
+                const p = e.features[0].properties;
+                const coords = e.features[0].geometry.coordinates;
+                popup.setLngLat(coords)
+                    .setHTML(`
+                        <strong>${p.StationName || 'EV Charger'}</strong><br>
+                        ${p.Address1}, ${p.City}<br>
+                        <b>${p.EV_Level || 'Unknown'} • ${p.kW || '??'} kW</b><br>
+                        Ports: ${p.EV_Connector_Types || 'N/A'} • Status: ${p.Status || 'Active'}
+                    `)
+                    .addTo(map);
+            });
+
+            map.on('mouseleave', 'unclustered-point', () => {
+                map.getCanvas().style.cursor = '';
+                popup.remove();
+            });
+        });
+    </script>
+</body>
+</html>
