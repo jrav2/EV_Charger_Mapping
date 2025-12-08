@@ -28,6 +28,12 @@ The goal of this project is to help users understand and explore the availabilit
 ![Washington EV Charging Hub Home Page](imgs/allstations1.png)
 ![Washington EV Charging Hub Home Page](imgs/allstations2.png)
 
+### Station Finder:
+![Washington EV Charging Hub Home Page](imgs/stationfinder.png)
+
+### Station Density Map: 
+![Washington EV Charging Hub Home Page](imgs/heatmap.png)
+
 
 
 
