@@ -71,14 +71,14 @@ The goal of this project is to help users understand and explore the availabilit
 
 ## Data Sources
 - Primary Download Source:
-Public EV Charging Stations dataset from the Washington Geospatial Open Data Portal
-https://geo.wa.gov/datasets/wa-geoservices::public-ev-charging-stations/explore
+Public EV Charging Stations dataset from the Washington Geospatial Open Data Portal (To access please scroll down and press the source link for *EV Charging Stations*)
+https://geo.wa.gov 
 
 - Original Data Provider:
 Washington State Department of Transportation ArcGIS REST Feature Server
 https://services.arcgis.com/jsIt88o09Q0r1j8h/arcgis/rest/services/Public_EV_Charging_Stations/FeatureServer/0
 
--ArcGIS Map Viewer Version of the Dataset:
+- ArcGIS Map Viewer Version of the Dataset:
 Interactive map view of the same ArcGIS data
 https://www.arcgis.com/apps/mapviewer/index.html?url=https://services.arcgis.com/jsIt88o09Q0r1j8h/ArcGIS/rest/services/Public_EV_Charging_Stations/FeatureServer/0&source=sd
 
