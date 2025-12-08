@@ -217,6 +217,62 @@
             margin-bottom: 8px;
         }
 
+        /* Map Legend */
+        .map-legend {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(21, 25, 50, 0.95);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+            z-index: 100;
+        }
+
+        .map-legend h4 {
+            margin: 0 0 12px 0;
+            color: #00d4ff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .legend-dot.stations {
+            background: #4CAF50;
+            border: 1px solid #2E7D32;
+        }
+
+        .legend-dot.clicked {
+            background: #00d4ff;
+            border: 2px solid #7b2ff7;
+        }
+
+        .legend-dot.closest {
+            background: #FF9800;
+            border: 3px solid #E65100;
+        }
+
         /* Responsive */
         @media screen and (max-width: 768px) {
             .sidebar {
@@ -234,6 +290,17 @@
 
             .map-container {
                 padding: 0 10px;
+            }
+
+            .map-legend {
+                bottom: 15px;
+                right: 15px;
+                padding: 12px 15px;
+                font-size: 12px;
+            }
+
+            .map-legend h4 {
+                font-size: 13px;
             }
         }
     </style>
@@ -270,7 +337,7 @@
         <div class="map-container">
             <!-- Sidebar -->
             <div class="sidebar">
-                <div class="title">🔍 Search Location</div>
+                <div class="title">Search Location</div>
                 
                 <div class="instructions">
                     <strong>How to use:</strong>
@@ -289,6 +356,23 @@
 
             <!-- Map -->
             <div id="map"></div>
+
+            <!-- Map Legend -->
+            <div class="map-legend">
+                <h4>Map Legend</h4>
+                <div class="legend-item">
+                    <div class="legend-dot stations"></div>
+                    <span>All Stations</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot clicked"></div>
+                    <span>Searched/Clicked Point</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot closest"></div>
+                    <span>Closest Station</span>
+                </div>
+            </div>
         </div>
     </section>
 
