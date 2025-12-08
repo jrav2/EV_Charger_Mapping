@@ -70,6 +70,7 @@ The goal of this project is to help users understand and explore the availabilit
 - Mapbox integration for smooth, interactive map experiences
 
 ## Data Sources
+**NOTE: TO ACCESS THESE DATASETS YOU MUST COPY AND PASTE THE LINK INTO THE WEB BROWSER MANUALLY, CLICKING IT OFF OF THE README FILE WILL NOT WORK**
 - Primary Download Source:
 Public EV Charging Stations dataset from the Washington Geospatial Open Data Portal (To access please scroll down and press the source link for *EV Charging Stations*)
 https://geo.wa.gov 
