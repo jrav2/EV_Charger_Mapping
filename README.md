@@ -69,7 +69,8 @@ The goal of this project is to help users understand and explore the availabilit
 - Consistent navigation bar for easy page switching
 - Mapbox integration for smooth, interactive map experiences
 
-
+## Data Sources
+- The data for this project was retrieved from the Washington State Department of Transportation’s Public EV Charging Stations dataset, accessed through its ArcGIS REST Feature Server: https://services.arcgis.com/jsIt88o09Q0r1j8h/arcgis/rest/services/Public_EV_Charging_Stations/FeatureServer/0.
 
 
 
