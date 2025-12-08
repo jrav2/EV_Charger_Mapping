@@ -70,7 +70,7 @@ The goal of this project is to help users understand and explore the availabilit
 - Mapbox integration for smooth, interactive map experiences
 
 ## Data Sources
-**NOTE: TO ACCESS THESE DATASETS YOU MUST COPY AND PASTE THE LINK INTO THE WEB BROWSER MANUALLY, CLICKING IT OFF OF THE README FILE WILL NOT WORK**
+**NOTE: SOMETIMES TO ACCESS THESE DATASETS YOU MUST COPY AND PASTE THE LINK INTO THE WEB BROWSER MANUALLY, CLICKING IT OFF OF THE README FILE MAY NOT ALWAYS WORK**
 - Primary Download Source:
 Public EV Charging Stations dataset from the Washington Geospatial Open Data Portal (To access please scroll down and press the source link for *EV Charging Stations* which is under **EV Charging Stations 1,928**)
 https://geo.wa.gov 
@@ -83,7 +83,17 @@ https://services.arcgis.com/jsIt88o09Q0r1j8h/arcgis/rest/services/Public_EV_Char
 Interactive map view of the same ArcGIS data
 https://www.arcgis.com/apps/mapviewer/index.html?url=https://services.arcgis.com/jsIt88o09Q0r1j8h/ArcGIS/rest/services/Public_EV_Charging_Stations/FeatureServer/0&source=sd
 
+## Applied Libraries
+Our project makes use of several modern web libraries and online services to build an interactive and responsive EV charging visualization platform. Mapbox GL JS and Leaflet are applied for mapping and geospatial visualization, allowing us to render dynamic map tiles, style layers, and display more than one thousand charging station points with smooth interaction. The application also uses the Mapbox basemap service to provide high-quality map backgrounds and geocoding capabilities for location searches. Data for the charging stations is accessed from the Washington Geospatial Open Data Portal and the ArcGIS REST Feature Server, enabling real-time retrieval of accurate spatial data. Additionally, GitHub is used for version control and web hosting, allowing the site to be easily updated and shared.
 
+## Acknowledgements
+
+(Write something)
+
+## AI Use Dislosure
+This project used ChatGPT and GitHub Copilot to help with coding. AI tools were mainly used for frontend development, including CSS for a modern, responsive design with glassmorphic effects and gradient backgrounds. They also helped integrate mapping libraries like Mapbox GL JS and Leaflet, add interactive map features, and create dynamic station listings. AI assisted with JavaScript functions such as distance calculations, geocoding, event handling, and popup displays. It also helped debug issues and optimize code. All major decisions about the project, including concept, data, features, and design, were made by the team, with AI only serving as a coding assistant.
+
+## Additional Notes
 
 
 
@@ -103,8 +113,3 @@ https://www.arcgis.com/apps/mapviewer/index.html?url=https://services.arcgis.com
 
 To update our local repositories using the cmd prompt, see 
 [Lab 1 Instructions](https://github.com/jakobzhao/geog328/tree/main/labs/lab01)
-
-On Windows, can use the following commands on repository root: 
-**git checkout --force** and **git pull**
-
-https://geo.wa.gov
