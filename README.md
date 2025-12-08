@@ -10,7 +10,7 @@
 Our project aims to create an interactive mapping platform that visualizes the distribution of electric vehicle charging stations across Washington State. It is designed for a wide range of users, including shoppers researching electric vehicles, current EV owners looking for charging locations, long-distance travelers planning routes, and city planners or business owners examining infrastructure needs. The website is organized into four main sections: a statewide map of public charging stations, a tool for finding the nearest chargers, a density map that highlights areas with higher or lower charger availability, and a page that provides educational information about Washington’s public EV charging network. Together, these features create a clear and accessible resource for understanding and navigating EV charging across the state.
 
 ## Favicon
-<img src="imgs/favicon.png" alt="Washington EV Charging Hub" width="100">
+<img src="imgs/favicon.png" alt="Washington EV Charging Hub" width="1000">
 
 ## Project Goals
 The goal of this project is to help users understand and explore the availability of electric vehicle charging infrastructure in Washington State. By visualizing charging station locations and providing tools to search, compare, and analyze this information, it helps make EV charging more accessible, support informed decision making, and highlight patterns or gaps in the current charging network.
