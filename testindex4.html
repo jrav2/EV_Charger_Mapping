@@ -34,6 +34,17 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* Section Header */
+        .section-header {
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+
+        /* Map Section */
+        .map-section {
+            padding: 40px 0 80px 0;
+        }
+
         /* Legend */
         .legend {
             position: absolute;
@@ -164,7 +175,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <div class="hero-badge">📊 STATION DENSITY MAP</div>
+            <div class="hero-badge">📊 DENSITY VISUALIZATION</div>
             <h1>STATION DENSITY MAP</h1>
             <p class="subtitle">Visualize the distribution and coverage of EV charging stations across Washington State</p>
         </div>
@@ -172,12 +183,18 @@
 
     <!-- Map Section -->
     <section class="map-section">
+        <div class="section-header">
+            <div class="section-label">STATION DENSITY MAP</div>
+            <h2>Heat Map Visualization</h2>
+            <p>Explore charging station concentrations and identify high-density areas</p>
+        </div>
+
         <div class="map-container">
             <!-- Info Panel -->
             <div class="info-panel">
                 <h3>Heat Map View</h3>
                 <p>Areas in red indicate high concentrations of charging stations, while blue areas show lower density.</p>
-                <p class="tip">Zoom in to see individual stations appear</p>
+                <p class="tip">💡 Zoom in to see individual stations appear</p>
             </div>
 
             <!-- Map -->
@@ -185,7 +202,7 @@
 
             <!-- Legend -->
             <div class="legend">
-                <h4>Station Density Map</h4>
+                <h4>Station Density</h4>
                 <div class="legend-item">
                     <div class="legend-color" style="background: rgb(178,24,43);"></div>
                     <span>Very High</span>
