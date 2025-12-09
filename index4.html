@@ -194,7 +194,7 @@
     
 
         <div class="map-container">
-        <!----> <!--Info Panel--> 
+        <!--Info Panel--> 
             <div class="info-panel">
                 <h3>Heat Map View</h3>
                 <p>Areas in red indicate high concentrations of charging stations, while blue dots represent individual stations.</p>
@@ -229,7 +229,7 @@
                 'data': 'assets/Public_EV_Charging_Stations.geojson'
             });
 
-            // Find the first label layer
+            // Find the first label layer in basemap
             const layers = map.getStyle().layers;
             let firstLabelLayerId = null;
             for (let i = 0; i < layers.length; i++) {
@@ -240,6 +240,7 @@
                 }
             }
 
+            // Get heatmap ready to add
             const heatLayer = {
                 'id': 'EVstations-heat',
                 'type': 'heatmap',
@@ -295,9 +296,10 @@
                 }
             };
 
-            // Add heatmap layer
+            // If have labels, add heatmap first
             if (firstLabelLayerId) {
                 map.addLayer(heatLayer, firstLabelLayerId);
+              // else just add heatmap  
             } else {
                 map.addLayer(heatLayer);
             }
@@ -308,6 +310,7 @@
                 'data': 'assets/Public_EV_Charging_Stations.geojson'
             });
 
+            // Add individual networks
             map.addLayer({
                 'id': 'stations-point',
                 'type': 'circle',
