@@ -7,6 +7,34 @@
     <link rel="icon" type="image/png" href="imgs/favicon.png">
     <link rel="stylesheet" href="css/testmain.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .team-photo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .team-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .role {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .feature-box h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -84,33 +112,47 @@
         </div>
 
         <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
-            <div class="feature-box" style="padding: 2rem;">
-                <div class="feature-icon" style="font-size: 4rem; margin-bottom: 1rem;">👨‍💻</div>
-                <h4 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Alex Johnson</h4>
-                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem; font-weight: 600;">Lead Developer</p>
+            
+            <!-- Team Member 1 - Change alex.jpg to your image filename -->
+            <div class="feature-box" style="padding: 2rem; text-align: center;">
+                <div class="team-photo">
+                    <img src="imgs/car.jpg" alt="Alex Johnson">
+                </div>
+                <h4>Alex Johnson</h4>
+                <p class="role">Lead Developer</p>
                 <p>Full-stack developer with a passion for clean energy and sustainable technology. Specialized in geospatial data visualization and interactive mapping solutions.</p>
             </div>
 
-            <div class="feature-box" style="padding: 2rem;">
-                <div class="feature-icon" style="font-size: 4rem; margin-bottom: 1rem;">👩‍💼</div>
-                <h4 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Sarah Martinez</h4>
-                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem; font-weight: 600;">UX Designer</p>
+            <!-- Team Member 2 - Change sarah.jpg to your image filename -->
+            <div class="feature-box" style="padding: 2rem; text-align: center;">
+                <div class="team-photo">
+                    <img src="imgs/car.jpg" alt="Sarah Martinez">
+                </div>
+                <h4>Sarah Martinez</h4>
+                <p class="role">UX Designer</p>
                 <p>User experience designer focused on creating intuitive interfaces. Dedicated to making complex data accessible and easy to understand for all users.</p>
             </div>
 
-            <div class="feature-box" style="padding: 2rem;">
-                <div class="feature-icon" style="font-size: 4rem; margin-bottom: 1rem;">👨‍🔬</div>
-                <h4 style="font-size: 1.3rem; margin-bottom: 0.5rem;">David Chen</h4>
-                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem; font-weight: 600;">Data Analyst</p>
+            <!-- Team Member 3 - Change david.jpg to your image filename -->
+            <div class="feature-box" style="padding: 2rem; text-align: center;">
+                <div class="team-photo">
+                    <img src="imgs/car.jpg" alt="David Chen">
+                </div>
+                <h4>David Chen</h4>
+                <p class="role">Data Analyst</p>
                 <p>Data scientist specializing in infrastructure analysis and optimization. Ensures our platform provides the most accurate and useful charging station information.</p>
             </div>
 
-            <div class="feature-box" style="padding: 2rem;">
-                <div class="feature-icon" style="font-size: 4rem; margin-bottom: 1rem;">👩‍🎨</div>
-                <h4 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Emily Rodriguez</h4>
-                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem; font-weight: 600;">Project Manager</p>
+            <!-- Team Member 4 - Change emily.jpg to your image filename -->
+            <div class="feature-box" style="padding: 2rem; text-align: center;">
+                <div class="team-photo">
+                    <img src="imgs/car.jpg" alt="Emily Rodriguez">
+                </div>
+                <h4>Emily Rodriguez</h4>
+                <p class="role">Project Manager</p>
                 <p>Experienced project coordinator with a background in transportation planning. Keeps the team aligned and focused on delivering value to EV drivers.</p>
             </div>
+
         </div>
     </section>
 
