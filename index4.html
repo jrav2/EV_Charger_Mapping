@@ -91,8 +91,8 @@
         /* Info Panel */
         .info-panel {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 300px;
+            left: 30px;
             background: rgba(21, 25, 50, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -100,7 +100,7 @@
             padding: 20px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             z-index: 100;
-            max-width: 300px;
+            max-width: 200px;
         }
 
         .info-panel h3 {
@@ -124,6 +124,8 @@
             font-size: 12px;
             color: #00d4ff;
         }
+
+   
 
         /* Responsive */
         @media screen and (max-width: 768px) {
@@ -175,6 +177,10 @@
             <div class="hero-badge">📊 STATION DENSITY</div>
             <h1>STATION DENSITY MAP</h1>
             <p class="subtitle">Explore charging station concentration across Washington State</p>
+            <p class = "subtitle">Instructions for Map: <br>
+                Mouse wheel scroll = Zoom in / Zoom out <br>
+                Ctrl + Mouse drag = Pan map <br>
+            </p>
         </div>
     </section>
 
@@ -188,40 +194,15 @@
     
 
         <div class="map-container">
-            <!-- Info Panel -->
+        <!----> <!--Info Panel--> 
             <div class="info-panel">
                 <h3>Heat Map View</h3>
-                <p>Areas in red indicate high concentrations of charging stations, while blue areas show lower density.</p>
+                <p>Areas in red indicate high concentrations of charging stations, while blue dots represent individual stations.</p>
                 <p class="tip">💡 Zoom in to see individual stations appear</p>
             </div>
 
             <!-- Map -->
             <div id="map"></div>
-
-            <!-- Legend -->
-            <div class="legend">
-                <h4>Station Density</h4>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: rgb(178,24,43);"></div>
-                    <span>Very High</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: rgb(239,138,98);"></div>
-                    <span>High</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: rgb(253,219,199);"></div>
-                    <span>Medium</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: rgb(209,229,240);"></div>
-                    <span>Low</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: rgb(103,169,207);"></div>
-                    <span>Very Low</span>
-                </div>
-            </div>
         </div>
     </section>
 
