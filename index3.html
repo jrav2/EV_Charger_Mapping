@@ -225,12 +225,13 @@
             background: rgba(21, 25, 50, 0.95);
             backdrop-filter: blur(10px);
             color: #ffffff;
-            padding: 15px 20px;
+            padding: 5px 20px;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 13px;
             z-index: 100;
+            max-width: 150px;
         }
 
         .map-legend h4 {
@@ -539,9 +540,20 @@
             const resp = await fetch('./assets/Public_EV_Charging_Stations.geojson');
             const geojson = await resp.json();
             stations = geojson.features;
+            
+            // Find the first label layer
+            const layers = map.getStyle().layers;
+            let firstLabelLayerId = null;
+            for (let i = 0; i < layers.length; i++) {
+                const l = layers[i];
+                if (l.type === 'symbol' && l.layout && l.layout['text-field']) {
+                    firstLabelLayerId = l.id;
+                    break;
+                }
+            }
 
             map.addSource('stations', { type: 'geojson', data: geojson });
-            map.addLayer({
+            const dots = {
                 id: 'stations-layer',
                 type: 'circle',
                 source: 'stations',
@@ -552,7 +564,13 @@
                     'circle-stroke-color': '#2E7D32',
                     'circle-opacity': 0.95
                 }
-            });
+            };
+
+            if (firstLabelLayerId) {
+                map.addLayer(dots, firstLabelLayerId);
+            } else {
+                map.addLayer(dots);
+            }
 
             buildLocationList();
         });
