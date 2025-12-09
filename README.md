@@ -39,16 +39,16 @@ The goal of this project is to help users understand and explore the availabilit
 **All Stations Page**
 
 - Display all EV charging stations across Washington State on an interactive map
-- Color-code stations by charger type (Level 1, Level 2, DC Fast Charging)
-- Click on any station marker to view detailed information (name, address, charger type)
-- Educational section explaining the three charger types and their charging speeds
+- Color-coded stations by charger type (Level 1, Level 2, DC Fast Charging)
+- Click integration for all stations marker to view detailed information (name, address, charger type)
+- Informational section explaining the three charger types and their charging speeds
 - Legend showing what each color represents
 
 **Station Finder Page**
 
-- Click anywhere on the map to find the 5 closest charging stations
+- Click anywhere on the map to list the 5 closest charging stations
 - Search for a specific location or address using the search bar
-- Display distance calculations from your selected point to nearby stations
+- Display distance from your selected point to nearby stations
 - Show detailed station information (name, address, phone, hours, distance)
 - Visual markers distinguish between your clicked location (blue), all stations (green), and the closest station (orange)
 - Sidebar listing with clickable station cards that fly to the station on the map
