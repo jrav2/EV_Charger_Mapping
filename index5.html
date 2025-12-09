@@ -37,14 +37,32 @@
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="topnav" id="myTopnav">
+        <div class="logo">
+            <img src="imgs/favicon.png" alt="EV HUB Logo">
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="index2.html">All Stations</a>
+            <a href="index3.html">Station Finder</a>
+            <a href="index4.html">Station Density Map</a>
+            <a href="index5.html" class="active">More Info</a>
+        </div>
+        <a href="javascript:void(0);" class="icon" id="navToggle">
+            <i class="fa fa-bars"></i>
+        </a>
+    </nav>
 
-<div class="topnav">
-    <a href="index.html">Homepage</a>
-    <a href="index2.html">All Stations</a>
-    <a href="index3.html">Finder</a>
-    <a href="index4.html">EV Charging Overview</a>
-    <a class="active" href="index5.html">EV Chargers by Type & Power Level</a>
-</div>
+
+    <!-- Mission Section -->
+    <section class="map-section">
+        <div class="section-header">
+            <div class="section-label">OUR MISSION</div>
+            <h2>Accelerating EV Adoption</h2>
+            <p>Making electric vehicle charging accessible and convenient for everyone</p>
+        </div>
+
 
         <div class="map-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
             <div class="map-card">
@@ -60,6 +78,7 @@
         </div>  
     </section>
 
+
     <!-- Project Overview Section -->
     <section class="features-section">
         <div class="section-header">
@@ -67,8 +86,8 @@
             <h2>What We're Building</h2>
             <p>Our goal is to create a user-friendly EV charging station locator for Washington State, helping drivers confidently plan their journeys. We've developed multiple mapping tools including station browsers, proximity finders, and density visualizations to serve different user needs. Our platform leverages real charging station data to provide accurate, up-to-date information about locations, charger types, and availability.</p>
         </div>
-        
     </section>
+
 
     <!-- Team Section -->
     <section class="features-section">
@@ -78,8 +97,9 @@
             <p>Passionate developers committed to sustainable transportation</p>
         </div>
 
+
         <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
-            
+           
             <!-- Team Member 1 - Change alex.jpg to your image filename -->
             <div class="feature-box" style="padding: 2rem; text-align: center;">
                 <div class="team-photo">
@@ -89,6 +109,7 @@
                 <p class="role">Dev 1</p>
                 <p>Created the basemap.</p>
             </div>
+
 
             <!-- Team Member 2 - Change sarah.jpg to your image filename -->
             <div class="feature-box" style="padding: 2rem; text-align: center;">
@@ -100,6 +121,7 @@
                 <p>Created the EV distance finder map.</p>
             </div>
 
+
             <!-- Team Member 3 - Change david.jpg to your image filename -->
             <div class="feature-box" style="padding: 2rem; text-align: center;">
                 <div class="team-photo">
@@ -109,6 +131,7 @@
                 <p class="role">Dev 3</p>
                 <p>Created the station density map.</p>
             </div>
+
 
             <!-- Team Member 4 - Change emily.jpg to your image filename -->
             <div class="feature-box" style="padding: 2rem; text-align: center;">
@@ -120,8 +143,10 @@
                 <p>Designed the web interface.</p>
             </div>
 
+
         </div>
     </section>
+
 
     <!-- Call to Action -->
     <section class="map-section" style="padding: 3rem 2rem;">
@@ -134,6 +159,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- JS -->
     <script src="js/test.js"></script>
