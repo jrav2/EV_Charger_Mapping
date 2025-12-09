@@ -17,7 +17,7 @@ The goal of this project is to help users understand and explore the availabilit
 
 ## Application URL
 **Link to Map:**
-(insert the link to the map)
+[Washington EV Charging Hub](https://jrav2.github.io/EV_Charger_Mapping/)
 
 ## Screenshots
 ### Homepage:

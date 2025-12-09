@@ -329,11 +329,12 @@
                 paint: {
                     'circle-radius': 10,
                     'circle-color': [
-                        'match',
-                        ['get', 'EV_Level'],
-                        'DC Fast', '#ff4d4d',
-                        'Level 2', '#ff8c1a',
-                        'Level 1', '#4da6ff',
+                        'case',
+                        // Priority: EV_DC_Fast (best) → EV_Level2_ → EV_Level1_
+                        ['>', ['coalesce', ['get', 'EV_DC_Fast'], 0], 0], '#ff4d4d',
+                        ['>', ['coalesce', ['get', 'EV_Level2_'], 0], 0], '#ff8c1a',
+                        ['>', ['coalesce', ['get', 'EV_Level1_'], 0], 0], '#4da6ff',
+                        // Fallback when none are present or values are zero
                         '#cccccc'
                     ],
                     'circle-stroke-width': 2,
