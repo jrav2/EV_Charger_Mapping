@@ -1,54 +1,115 @@
 <!DOCTYPE html>
-<html>
 
+<html lang="en">
 <head>
-    <title>Our Project</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Washington EV Charging Hub</title>
     <link rel="icon" type="image/png" href="imgs/favicon.png">
-
-    <!-- Including the main.css file for styling -->
-    <link rel="stylesheet" href="css/main.css">
-
-    <!-- Including the Font Awesome CSS library for icons -->
+    <link rel="stylesheet" href="css/testmain.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-
 <body>
-
-    <!-- Navigation bar -->
-    <div class="topnav" id="myTopnav">
-        <!-- Active link pointing to the index.html page -->
-        <a class="active" href="index.html">Our Project</a>
-
-        <!-- Links to other sections -->
-        <a href="index2.html">Public EV Charging Stations</a>
-        <a href="index3.html">EV Charging Station Finder</a>
-        <a href="index4.html">EV Charging Station Density</a>
-        <a href="index5.html">EV Chargers by Type & Power Level</a>
-        <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links on smaller screens -->
-        <a href="javascript:void(0);" class="icon">
+    <!-- Navigation Bar -->
+    <nav class="topnav" id="myTopnav">
+        <div class="logo">
+            <img src="imgs/favicon.png" alt="EV HUB Logo">
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="testindex2.html">All Stations</a>
+            <a href="testindex3.html">Station Finder</a>
+            <a href="testindex4.html">Station Density Map</a>
+            <a href="testindex5.html">Charger Types</a>
+        </div>
+        <a href="javascript:void(0);" class="icon" id="navToggle">
             <i class="fa fa-bars"></i>
         </a>
+    </nav>
+
+<!-- Hero Section with Background Image -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">⚡ WASHINGTON STATE</div>
+        <h1>EV CHARGING HUB</h1>
+        <p class="subtitle">Your comprehensive platform for finding electric vehicle charging stations throughout Washington State</p>
+        <div class="hero-buttons">
+            <a href="#maps" class="btn btn-primary">Choose Your Map</a>
+            <a href="testindex3.html" class="btn btn-secondary">Find Station Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- Map Selection Section -->
+<section class="map-section" id="maps">
+    <div class="section-header">
+        <div class="section-label">CHOOSE YOUR MAP</div>
+        <h2>Interactive Mapping Tools</h2>
+        <p>All demo maps and documentation are included in the platform</p>
     </div>
 
-    <!-- Page content -->
-    <div class="content">
-        <!-- Description of poached egg section -->
-        <h1>Washington EV Charging Hub</h1>
-        <hr class="solid">
-        Welcome to Washington EV Charging Stations & Finder, your go-to resource for locating electric vehicle charging stations
-        across Washington State. Our site makes it easy to explore where stations are located and plan your trips efficiently.
-        On the Public EV Charging Stations page, you can view all available stations on an interactive map, click to see station 
-        details, and get a clear overview of charging coverage across the state.
-        The EV Charging Station Finder page allows you to search for a specific location or click on the map to find the nearest 
-        charging station. Using an interactive map, it highlights the closest station and shows the distance, helping you make 
-        smarter, faster decisions while on the road. Whether you’re a local EV driver or just planning a trip, our tools provide
-        all the information you need to stay charged and on track.
+    <div class="map-grid">
+        <div class="map-card">
+            <div class="map-icon">🗺️</div>
+            <h3>Public EV Charging Stations</h3>
+            <p>Browse all available public charging stations across Washington State on an interactive map with detailed station information.</p>
+            <a href="testindex2.html" class="btn btn-primary">Launch Map</a>
+        </div>
+        <div class="map-card">
+            <div class="map-icon">📍</div>
+            <h3>Station Finder</h3>
+            <p>Search for any location or click on the map to find the nearest charging station with accurate distance calculations.</p>
+            <a href="testindex3.html" class="btn btn-primary">Launch Map</a>
+        </div>
+        <div class="map-card">
+            <div class="map-icon">📊</div>
+            <h3>Station Density Map</h3>
+            <p>Visualize the distribution and coverage of charging stations across different regions of Washington State.</p>
+            <a href="testindex4.html" class="btn btn-primary">Launch Map</a>
+        </div>
+        <div class="map-card">
+            <div class="map-icon">⚡</div>
+            <h3>Charger Types</h3>
+            <p>Explore charging stations filtered by charger type and power level to find the perfect match for your vehicle.</p>
+            <a href="testindex5.html" class="btn btn-primary">Launch Map</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="section-header">
+        <div class="section-label">WHY CHOOSE US</div>
+        <h2>Platform Features</h2>
+        <p>Built with cutting-edge technology for the best EV charging experience</p>
     </div>
 
-    <!-- Including the main.js file for JavaScript functionality -->
-    <script src="js/main.js"></script>
+    <div class="features-grid">
+        <div class="feature-box">
+            <div class="feature-icon">🔍</div>
+            <h4>Smart Search</h4>
+            <p>Find the closest and most convenient charging stations based on your location</p>
+        </div>
+        <div class="feature-box">
+            <div class="feature-icon">📱</div>
+            <h4>Mobile Friendly</h4>
+            <p>Fully responsive design that works seamlessly on all devices</p>
+        </div>
+        <div class="feature-box">
+            <div class="feature-icon">🎯</div>
+            <h4>Accurate Data</h4>
+            <p>Up-to-date information with verified locations and specifications</p>
+        </div>
+        <div class="feature-box">
+            <div class="feature-icon">⚡</div>
+            <h4>Fast Loading</h4>
+            <p>Optimized maps that load quickly to get you information instantly</p>
+        </div>
+    </div>
+</section>
+
+<!-- JS -->
+<script src="js/test.js"></script>
 
 </body>
-
 </html>
