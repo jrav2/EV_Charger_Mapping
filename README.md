@@ -29,10 +29,10 @@ The goal of this project is to help users understand and explore the availabilit
 ![Washington EV Charging Hub Home Page](imgs/allstations2.png)
 
 ### Station Finder:
-![Washington EV Charging Hub Home Page](imgs/stationfinder.png)
+![Washington EV Charging Hub Home Page](imgs/findingstations.png)
 
 ### Station Density Map: 
-![Washington EV Charging Hub Home Page](imgs/heatmap.png)
+![Washington EV Charging Hub Home Page](imgs/densitymap.png)
 
 ## Main Functions
 
@@ -102,10 +102,10 @@ We would like to give special thanks to:
   - Feedback and comments from Geography 328 classmates
 
 Images were from:
-- f
-- f
-- f
-- f
+- https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSOrgYGXSYV61AaicvsRgalDkma4LkyGbvlA&s (Greedo Image)
+- https://wallpapers-clan.com/wp-content/uploads/2022/10/lego-star-wars-pfp-1.jpg (Revan Image)
+- https://flipanim.com/gif/r/e/REFhK8xT.gif (Yoda Image)
+- https://i.scdn.co/image/ab67616d0000b2736455942e671fc3593e33dfc7 (Jar Jar Image)
 
 ## AI Use Dislosure
 This project leveraged ChatGPT and GitHub Copilot to help with coding in unfamiliar areas and to help us explore our stylistic options. We used these programs for frontend development, such as adapting our CSS. It helped us create a modern, responsive design that included glassmorphic effects and gradient backgrounds. AI assisted us in integrating JavaScript functions such as distance calculations, geocoding, event handling, and popup displays. These were elements we first implemented, and then used AI tools to help in debugging and to optimize the code. All major design decisions about the project, including concepts, data, features, and style, were made by the team.
