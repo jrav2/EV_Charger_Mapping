@@ -413,22 +413,26 @@
 
         let stations = [];
 
+        // Removes existing stations layer
         function removeLayerIfExists(id) {
             if (map.getLayer(id)) map.removeLayer(id);
             if (map.getSource(id)) map.removeSource(id);
         }
 
+        // Builds list of 5 closest stations
         function buildLocationList(centerLngLat) {
             const listings = document.getElementById('listings');
             const storeCount = document.getElementById('store-count');
             if (!listings || !storeCount) return;
 
+            // Blank list on initial load
             if (!centerLngLat || !Array.isArray(centerLngLat) || centerLngLat.length !== 2) {
                 storeCount.textContent = '';
                 listings.innerHTML = '';
                 return;
             }
 
+            // Converts clicked point into Turf.js point
             const clickPoint = turf.point(centerLngLat);
             const stationsWithDistance = stations.map((feature, idx) => {
                 const coords = feature.geometry && feature.geometry.coordinates;
@@ -436,10 +440,12 @@
                 return { feature, distance: dist, idx };
             });
 
+            // Finds top 5 closest stations
             const top5 = stationsWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 5);
             storeCount.textContent = `📍 5 Closest Stations`;
             listings.innerHTML = '';
 
+            // Adds top 5 closest stations information
             top5.forEach((item, rank) => {
                 const feature = item.feature;
                 const distance = item.distance;
@@ -473,6 +479,7 @@
             });
         }
 
+        // Finds nearest station from selected location, updates station markers, info box, and sidebar
         function handleLocation(lng, lat) {
             if (!stations.length) return;
             const clickPoint = turf.point([lng, lat]);
@@ -480,7 +487,7 @@
             const nearest = turf.nearestPoint(clickPoint, stationsCollection);
             const distance = turf.distance(clickPoint, nearest, { units: 'miles' });
 
-            // Click marker
+            // Marks clicked point on map
             removeLayerIfExists('click-point');
             map.addSource('click-point', { type: 'geojson', data: clickPoint });
             map.addLayer({
@@ -496,7 +503,7 @@
                 }
             });
 
-            // Highlight nearest
+            // Highlight nearest station
             removeLayerIfExists('closest-station');
             map.addSource('closest-station', { type: 'geojson', data: nearest });
             map.addLayer({
@@ -512,7 +519,7 @@
                 }
             });
 
-            // Show info
+            // Shows pop-up info box of nearest station
             const info = document.getElementById('info');
             const name = nearest.properties && (nearest.properties.Station_Na || 'N/A');
             const phone = nearest.properties && (nearest.properties.Phone_Numb || 'N/A');
@@ -526,6 +533,7 @@
             buildLocationList([lng, lat]);
         }
 
+        //  Sends query to Mapbox Geocoding API and returns matching location
         async function geocode(query) {
             if (!query) return null;
             const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxgl.accessToken}&limit=1`;
@@ -537,6 +545,7 @@
             return null;
         }
 
+        // Loads map and EV stations
         map.on('load', async () => {
 
             const resp = await fetch('./assets/Public_EV_Charging_Stations.geojson');
@@ -554,6 +563,7 @@
                 }
             }
 
+            // Adds map layer and stations layer
             map.addSource('stations', { type: 'geojson', data: geojson });
             const dots = {
                 id: 'stations-layer',
@@ -568,6 +578,7 @@
                 }
             };
 
+            // Ensures stations layer is below labels
             if (firstLabelLayerId) {
                 map.addLayer(dots, firstLabelLayerId);
             } else {
@@ -577,8 +588,10 @@
             buildLocationList();
         });
 
+        // Identifies location clicked on map 
         map.on('click', (e) => handleLocation(e.lngLat.lng, e.lngLat.lat));
 
+        // Identifies location entered in search bar
         document.getElementById('searchBtn').addEventListener('click', async () => {
             const q = document.getElementById('searchInput').value.trim();
             if (!q) return;
@@ -589,6 +602,7 @@
             setTimeout(() => handleLocation(lng, lat), 400);
         });
 
+        // Allows pressing Enter in the search input to trigger the search
         document.getElementById('searchInput').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') document.getElementById('searchBtn').click();
         });
