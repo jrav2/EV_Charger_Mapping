@@ -1,305 +1,545 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>EV Charging Station Finder — Washington</title>
-
-<link rel="icon" type="image/png" href="imgs/favicon.png">
-
-<!-- Main CSS (navbar + content styles) -->
-<link rel="stylesheet" href="css/main.css">
-
-<!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<!-- Mapbox CSS & JS -->
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-
-<style>
-    /* Optional: top controls for search/input */
-    .sidebar {
-        position: absolute;
-        width: 25%;
-        height: 525px;
-        top: 250px;
-        left: 0;
-        padding: 1rem;
-        overflow-y: scroll;
-        background-color: #f4f3e7;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        z-index: 100;
-    }
-
-        /* Map sizing */
-    #map {
-        width: 75%;
-        left: 25%;
-        /*height: 600px;*/ /* same height as Leaflet page */
-        height: 525px;/*Changed so map doesn't bleed past page*/
-        /*margin-top: 20px;*/
-             /* leaves space for navbar */
-
-        z-index: 10;
-    }
-
-    .title {
-        background: rgba(255,255,255,0.95);
-        padding: 10px 14px;
-        border-radius: 8px;
-        font-weight: 700;
-        color: #1f2937;
-        box-shadow: 0 4px 14px rgba(2,6,23,0.08);
-    }
-
-    /* Listing area in the sidebar */
-    .store-count { margin-top: 8px; font-weight: 700; }
-    .listings { margin-top: 8px; }
-    .store-item { padding: 8px; border-radius:6px; background: #fff; margin-bottom:8px; box-shadow: 0 2px 6px rgba(2,6,23,0.06); cursor: pointer }
-    .store-item:hover { transform: translateY(-2px); }
-    .store-name { margin:0 0 4px 0; font-size:14px }
-    .store-details { font-size:13px; color:#334155 }
-
-    .search {
-        display: flex;
-        align-items: center;
-        background: rgba(255,255,255,0.95);
-        padding: 6px;
-        border-radius: 8px;
-        box-shadow: 0 4px 14px rgba(2,6,23,0.08);
-    }
-
-    .search input { border:0; outline:none; padding:6px 8px; width:260px; font-size:14px }
-    .search button { border:0; background:#2563eb; color:white; padding:6px 10px; border-radius:6px; cursor:pointer; margin-left:6px }
-
-    /* Info box at bottom */
-    .info {
-        position: fixed;
-        left: 50%;
-        bottom: 22px;
-        transform: translateX(-50%);
-        z-index: 1400;
-        padding: 12px 18px;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 6px 24px rgba(16,24,40,0.16);
-        display: none;
-        font-weight: 600;
-    }
-
-    /* Ensure navbar is on top */
-    .topnav { z-index: 1500; }
-</style>
-
-</head>
-<body>
-
-<!-- Navigation Bar -->
-<div class="topnav" id="myTopnav">
-    <a href="index.html">Our Project</a>
-    <a href="index2.html">Public EV Charging Stations</a>
-
-    <a class="active" href="index3.html">EV Charging Station Finder</a>
+    <title>Station Finder - Washington EV Charging Hub</title>
+    <link rel="icon" type="image/png" href="imgs/favicon.png">
     
-    <a href="index4.html">EV Charging Station Density</a>
-    <a href="index5.html">EV Chargers by Type & Power Level</a>
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/testmain.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- Mapbox CSS & JS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.17.0-beta.1/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.17.0-beta.1/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
-    <a href="javascript:void(0);" class="icon">
-        <i class="fa fa-bars"></i>
-    </a>
-</div>
-
-<!-- Page content heading -->
-<div class="content">
-    <h2>EV Charging Station Finder — Washington</h2>
-    <p>Click on the map or search a location to find the nearest EV charging station.</p>
-</div>
-
-<!-- Map container -->
-<div id="map"></div>
-
-<!-- Topbar for search -->
-<div class="sidebar">
-    <div class="title">Search a Location</div>
-    <div class="search">
-        <input id="searchInput" placeholder="Search location or address" aria-label="Search location" />
-        <button id="searchBtn">Search</button>
-    </div>
-
-    <div id="store-count" class="store-count">Stations: 0</div>
-    <div id="listings" class="listings" aria-live="polite"></div>
-</div>
-
-<!-- Info box -->
-<div id="info" class="info"></div>
-
-<script>
-    // Mapbox token
-    //mapboxgl.accessToken = 'pk.eyJ1IjoibWpvdSIsImEiOiJjbWh5ZWZ6N2gwYWluMmptdTVlczZ5NXEzIn0.Ha9WIGJy4xJyUiZSR5xbNg';
-    mapboxgl.accessToken = 'pk.eyJ1Ijoiam9oYW5ucjIiLCJhIjoiY21obDBicm84MTN6MzJxb3EyaTk2MzcyOCJ9.QQ-NbzYXscnvoU23EgUcyw'
-
-    // Initialize Mapbox map centered on Washington
-    const map = new mapboxgl.Map({
-        container: 'map',
-        //style: 'mapbox://styles/mapbox/streets-v12',
-        style: 'mapbox://styles/johannr2/cmip03uix00n201r96oa0c6ba',
-        center: [-120.5, 47.5],
-        zoom: 7
-    });
-
-    const WA_BBOX = [-124.846, 45.544, -116.915, 49.002]; // Washington bounds
-    let stations = [];
-
-    function removeLayerIfExists(id) {
-        if (map.getLayer(id)) map.removeLayer(id);
-        if (map.getSource(id)) map.removeSource(id);
-    }
-
-    // Small helper to escape HTML when inserting property text into the sidebar
-    function escapeHtml(str) {
-        if (!str && str !== 0) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    // Build the sidebar location list showing closest 5 stations to a selected point
-    function buildLocationList(centerLngLat) {
-        const listings = document.getElementById('listings');
-        const storeCount = document.getElementById('store-count');
-        if (!listings || !storeCount) return;
-
-        // If no location provided, clear the sidebar
-        if (!centerLngLat || !Array.isArray(centerLngLat) || centerLngLat.length !== 2) {
-            storeCount.textContent = '';
-            listings.innerHTML = '';
-            return;
+    <style>
+        /* Map Container */
+        .map-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        // Calculate distance to all stations and sort by distance
-        const clickPoint = turf.point(centerLngLat);
-        const stationsWithDistance = stations.map((feature, idx) => {
-            const coords = feature.geometry && feature.geometry.coordinates;
-            const dist = coords ? turf.distance(clickPoint, turf.point(coords), { units: 'miles' }) : Infinity;
-            return { feature, distance: dist, idx };
+        #map {
+            width: 100%;
+            height: 600px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: absolute;
+            width: 320px;
+            max-height: 580px;
+            top: 10px;
+            left: 30px;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(21, 25, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.5);
+            border-radius: 3px;
+        }
+
+        .title {
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* Search Box */
+        .search {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .search input {
+            flex: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            padding: 10px 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search input:focus {
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .search button {
+            border: none;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            color: white;
+            padding: 10px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Store Count */
+        .store-count {
+            margin: 15px 0;
+            font-weight: 700;
+            color: #00d4ff;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Listings */
+        .listings {
+            margin-top: 15px;
+        }
+
+        .store-item {
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .store-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00d4ff;
+            transform: translateY(-2px);
+        }
+
+        .store-name {
+            margin: 0 0 8px 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .store-details {
+            font-size: 13px;
+            color: #b8bac9;
+            line-height: 1.5;
+        }
+
+        .store-item div {
+            font-size: 12px;
+            color: #b8bac9;
+            margin-top: 4px;
+        }
+
+        .store-item div:last-child {
+            color: #00d4ff;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Info Box */
+        .info {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            z-index: 1400;
+            padding: 15px 25px;
+            background: linear-gradient(145deg, #151932 0%, #1a1f3a 100%);
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+            display: none;
+            font-weight: 600;
+            color: #ffffff;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .info strong {
+            color: #00d4ff;
+        }
+
+        /* Instructions Box */
+        .instructions {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #b8bac9;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .instructions strong {
+            color: #00d4ff;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Map Legend */
+        .map-legend {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(21, 25, 50, 0.95);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+            z-index: 100;
+        }
+
+        .map-legend h4 {
+            margin: 0 0 12px 0;
+            color: #00d4ff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .legend-dot.stations {
+            background: #4CAF50;
+            border: 1px solid #2E7D32;
+        }
+
+        .legend-dot.clicked {
+            background: #00d4ff;
+            border: 2px solid #7b2ff7;
+        }
+
+        .legend-dot.closest {
+            background: #FF9800;
+            border: 3px solid #E65100;
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                max-height: none;
+                top: 0;
+                left: 0;
+                margin-bottom: 20px;
+            }
+
+            #map {
+                height: 400px;
+            }
+
+            .map-container {
+                padding: 0 10px;
+            }
+
+            .map-legend {
+                bottom: 15px;
+                right: 15px;
+                padding: 12px 15px;
+                font-size: 12px;
+            }
+
+            .map-legend h4 {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="topnav" id="myTopnav">
+        <div class="logo">
+            <img src="imgs/favicon.png" alt="EV HUB Logo">
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="index2.html">All Stations</a>
+            <a href="index3.html" class="active">Station Finder</a>
+            <a href="index4.html">Station Density Map</a>
+            <a href="index5.html">More Info</a>
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="toggleNav()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">📍 STATION FINDER</div>
+            <h1>FIND NEAREST STATION</h1>
+            <p class="subtitle">Click anywhere on the map or search a location to find the closest EV charging station</p>
+            <p class = "subtitle">Instructions for Map: <br>
+                Mouse wheel scroll = Zoom in / Zoom out <br>
+                Ctrl + Mouse drag = Pan map <br>
+                
+            </p>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="section-header">
+            <div class="section-label">STATION FINDER</div>
+            <h2>Find Your Nearest Charger</h2>
+            <p>Click anywhere on the map or search a location to discover the closest charging stations</p>
+        </div>
+
+        <div class="map-container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="title">Search Location</div>
+                
+                <div class="instructions">
+                    <strong>How to use:</strong>
+                    • Click anywhere on the map<br>
+                    • OR search for a specific location below
+                </div>
+
+                <div class="search">
+                    <input id="searchInput" placeholder="Search location or address" aria-label="Search location" />
+                    <button id="searchBtn">Search</button>
+                </div>
+
+                <div id="store-count" class="store-count"></div>
+                <div id="listings" class="listings" aria-live="polite"></div>
+            </div>
+
+            <!-- Map -->
+            <div id="map"></div>
+
+            <!-- Map Legend -->
+            <div class="map-legend">
+                <h4>Map Legend</h4>
+                <div class="legend-item">
+                    <div class="legend-dot stations"></div>
+                    <span>All Stations</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot clicked"></div>
+                    <span>Searched/Clicked Point</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot closest"></div>
+                    <span>Closest Station</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Box -->
+    <div id="info" class="info"></div>
+
+    <script>
+        // Toggle navigation
+        function toggleNav() {
+            var navLinks = document.getElementById("navLinks");
+            navLinks.classList.toggle("active");
+        }
+
+        // Mapbox token
+        mapboxgl.accessToken = 'pk.eyJ1Ijoiam9oYW5ucjIiLCJhIjoiY21obDBicm84MTN6MzJxb3EyaTk2MzcyOCJ9.QQ-NbzYXscnvoU23EgUcyw';
+
+        // Initialize map
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/johannr2/cmip03uix00n201r96oa0c6ba',
+            center: [-120.5, 47.5],
+            zoom: 6
         });
 
-        // Sort by distance and get top 5
-        const top5 = stationsWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 5);
+        let stations = [];
 
-        // Update count
-        storeCount.textContent = `Closest 5 Stations`;
+        function removeLayerIfExists(id) {
+            if (map.getLayer(id)) map.removeLayer(id);
+            if (map.getSource(id)) map.removeSource(id);
+        }
 
-        // Clear existing
-        listings.innerHTML = '';
+        function buildLocationList(centerLngLat) {
+            const listings = document.getElementById('listings');
+            const storeCount = document.getElementById('store-count');
+            if (!listings || !storeCount) return;
 
-        // Display top 5
-        top5.forEach((item, rank) => {
-            const feature = item.feature;
-            const distance = item.distance;
-            const props = feature.properties || {};
-            const name = props.Station_Na || props.StationName || props.name || 'Unnamed Station';
-            const addr = props.Address || props.address || '';
-            const city = props.City || props.CityName || '';
+            if (!centerLngLat || !Array.isArray(centerLngLat) || centerLngLat.length !== 2) {
+                storeCount.textContent = '';
+                listings.innerHTML = '';
+                return;
+            }
 
-            const listing = document.createElement('div');
-            listing.className = 'store-item';
-            listing.dataset.index = item.idx;
-            listing.innerHTML = `
-                <h4 class="store-name">#${rank + 1} ${escapeHtml(name)}</h4>
-                <div class="store-details">${escapeHtml(addr)} ${escapeHtml(city)}</div>
-                <div style="font-size:12px;color:#2563eb;font-weight:600;margin-top:4px">${distance.toFixed(2)} mi away</div>
-            `;
+            const clickPoint = turf.point(centerLngLat);
+            const stationsWithDistance = stations.map((feature, idx) => {
+                const coords = feature.geometry && feature.geometry.coordinates;
+                const dist = coords ? turf.distance(clickPoint, turf.point(coords), { units: 'miles' }) : Infinity;
+                return { feature, distance: dist, idx };
+            });
 
-            listing.addEventListener('click', () => {
-                if (feature.geometry && feature.geometry.coordinates) {
-                    const [lng, lat] = feature.geometry.coordinates;
-                    map.flyTo({ center: [lng, lat], zoom: 14 });
-                    handleLocation(lng, lat);
+            const top5 = stationsWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 5);
+            storeCount.textContent = `📍 5 Closest Stations`;
+            listings.innerHTML = '';
+
+            top5.forEach((item, rank) => {
+                const feature = item.feature;
+                const distance = item.distance;
+                const props = feature.properties || {};
+                const name = props.Station_Na || 'N/A';
+                const addr = props.Address || 'N/A';
+                const city = props.City || 'N/A';
+                const phone = props.Phone_Numb || 'N/A';
+                const hours = (props.Access_Hou && props.Access_Hou.trim()) || 'N/A';
+
+                const listing = document.createElement('div');
+                listing.className = 'store-item';
+                listing.dataset.index = item.idx;
+                listing.innerHTML = `
+                    <h4 class="store-name">#${rank + 1} ${name}</h4>
+                    <div class="store-details">${addr}, ${city}</div>
+                    <div>📞 ${phone}</div>
+                    <div>🕐 ${hours}</div>
+                    <div>📏 ${distance.toFixed(2)} miles away</div>
+                `;
+
+                listing.addEventListener('click', () => {
+                    if (feature.geometry && feature.geometry.coordinates) {
+                        const [lng, lat] = feature.geometry.coordinates;
+                        map.flyTo({ center: [lng, lat], zoom: 14 });
+                        handleLocation(lng, lat);
+                    }
+                });
+
+                listings.appendChild(listing);
+            });
+        }
+
+        function handleLocation(lng, lat) {
+            if (!stations.length) return;
+            const clickPoint = turf.point([lng, lat]);
+            const stationsCollection = turf.featureCollection(stations);
+            const nearest = turf.nearestPoint(clickPoint, stationsCollection);
+            const distance = turf.distance(clickPoint, nearest, { units: 'miles' });
+
+            // Click marker
+            removeLayerIfExists('click-point');
+            map.addSource('click-point', { type: 'geojson', data: clickPoint });
+            map.addLayer({
+                id: 'click-point',
+                type: 'circle',
+                source: 'click-point',
+                paint: {
+                    'circle-radius': 10,
+                    'circle-color': '#00d4ff',
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#7b2ff7',
+                    'circle-opacity': 0.95
                 }
             });
 
-            listings.appendChild(listing);
-        });
-    }
+            // Highlight nearest
+            removeLayerIfExists('closest-station');
+            map.addSource('closest-station', { type: 'geojson', data: nearest });
+            map.addLayer({
+                id: 'closest-station',
+                type: 'circle',
+                source: 'closest-station',
+                paint: {
+                    'circle-radius': 12,
+                    'circle-color': '#FF9800',
+                    'circle-stroke-width': 3,
+                    'circle-stroke-color': '#E65100',
+                    'circle-opacity': 1
+                }
+            });
 
-    function handleLocation(lng, lat) {
-        if (!stations.length) return;
-        const clickPoint = turf.point([lng, lat]);
-        const stationsCollection = turf.featureCollection(stations);
-        const nearest = turf.nearestPoint(clickPoint, stationsCollection);
-        const distance = turf.distance(clickPoint, nearest, { units: 'miles' });
+            // Show info
+            const info = document.getElementById('info');
+            const name = nearest.properties && (nearest.properties.Station_Na || 'N/A');
+            const phone = nearest.properties && (nearest.properties.Phone_Numb || 'N/A');
+            const hours = nearest.properties && (nearest.properties.Access_Hou && nearest.properties.Access_Hou.trim() || 'N/A');
+            info.innerHTML = `
+                Closest station: <strong>${name}</strong> — <strong>${distance.toFixed(2)} miles</strong><br/>
+                📞 ${phone} | 🕐 ${hours}
+            `;
+            info.style.display = 'block';
 
-        // Click marker
-        removeLayerIfExists('click-point');
-        map.addSource('click-point', { type: 'geojson', data: clickPoint });
-        map.addLayer({
-            id: 'click-point',
-            type: 'circle',
-            source: 'click-point',
-            paint: {
-                'circle-radius': 10,
-                'circle-color': '#2196F3',
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#1565C0',
-                'circle-opacity': 0.95
-            }
-        });
+            buildLocationList([lng, lat]);
+        }
 
-        // Highlight nearest station
-        removeLayerIfExists('closest-station');
-        map.addSource('closest-station', { type: 'geojson', data: nearest });
-        map.addLayer({
-            id: 'closest-station',
-            type: 'circle',
-            source: 'closest-station',
-            paint: {
-                'circle-radius': 12,
-                'circle-color': '#FF9800',
-                'circle-stroke-width': 3,
-                'circle-stroke-color': '#E65100',
-                'circle-opacity': 1
-            }
-        });
+        async function geocode(query) {
+            if (!query) return null;
+            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxgl.accessToken}&limit=1`;
+            try {
+                const res = await fetch(url);
+                const json = await res.json();
+                if (json && json.features && json.features.length) return json.features[0];
+            } catch (err) { console.error('Geocode error', err); }
+            return null;
+        }
 
-        // Show info
-        const info = document.getElementById('info');
-        const name = nearest.properties && (nearest.properties.Station_Na || nearest.properties.StationName || 'Unnamed');
-        info.innerHTML = `Closest station: <strong>${name}</strong> — <strong>${distance.toFixed(2)} miles</strong>`;
-        info.style.display = 'block';
+        map.on('load', async () => {
 
-        // Update sidebar with top 5 closest stations
-        buildLocationList([lng, lat]);
-    }
-
-    async function geocode(query) {
-        if (!query) return null;
-        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxgl.accessToken}&limit=1`;
-        try {
-            const res = await fetch(url);
-            const json = await res.json();
-            if (json && json.features && json.features.length) return json.features[0];
-        } catch (err) { console.error('Geocode error', err); }
-        return null;
-    }
-
-    map.on('load', async () => {
-        map.fitBounds([[WA_BBOX[0], WA_BBOX[1]], [WA_BBOX[2], WA_BBOX[3]]], { padding: 40 });
-
-        
-        // Load EV stations GeoJSON
-        try {
             const resp = await fetch('./assets/Public_EV_Charging_Stations.geojson');
             const geojson = await resp.json();
             stations = geojson.features;
 
-            // Add stations to map
             map.addSource('stations', { type: 'geojson', data: geojson });
             map.addLayer({
                 id: 'stations-layer',
@@ -314,33 +554,24 @@
                 }
             });
 
-            // Populate the sidebar list now that stations are loaded
-            try { buildLocationList(); } catch (e) { console.warn('buildLocationList failed', e); }
+            buildLocationList();
+        });
 
-          
-        } catch (err) {
-            console.error('Failed to load stations', err);
-        }
-    });
+        map.on('click', (e) => handleLocation(e.lngLat.lng, e.lngLat.lat));
 
-    // Map click handler
-    map.on('click', (e) => handleLocation(e.lngLat.lng, e.lngLat.lat));
+        document.getElementById('searchBtn').addEventListener('click', async () => {
+            const q = document.getElementById('searchInput').value.trim();
+            if (!q) return;
+            const result = await geocode(q);
+            if (!result) { alert('Location not found'); return; }
+            const [lng, lat] = result.center;
+            map.flyTo({ center: [lng, lat], zoom: 12 });
+            setTimeout(() => handleLocation(lng, lat), 400);
+        });
 
-    // Search button
-    document.getElementById('searchBtn').addEventListener('click', async () => {
-        const q = document.getElementById('searchInput').value.trim();
-        if (!q) return;
-        const result = await geocode(q);
-        if (!result) { alert('Location not found'); return; }
-        const [lng, lat] = result.center;
-        map.flyTo({ center: [lng, lat], zoom: 12 });
-        setTimeout(() => handleLocation(lng, lat), 400);
-    });
-
-    // Enter key triggers search
-    document.getElementById('searchInput').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') document.getElementById('searchBtn').click();
-    });
-</script>
+        document.getElementById('searchInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('searchBtn').click();
+        });
+    </script>
 </body>
 </html>
