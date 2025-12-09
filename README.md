@@ -87,29 +87,28 @@ https://www.arcgis.com/apps/mapviewer/index.html?url=https://services.arcgis.com
 Our project makes use of several modern web libraries and online services to build an interactive and responsive EV charging visualization platform. Mapbox GL JS and Leaflet are applied for mapping and geospatial visualization, allowing us to render dynamic map tiles, style layers, and display more than one thousand charging station points with smooth interaction. The application also uses the Mapbox basemap service to provide high-quality map backgrounds and geocoding capabilities for location searches. Data for the charging stations is accessed from the Washington Geospatial Open Data Portal and the ArcGIS REST Feature Server, enabling real-time retrieval of accurate spatial data. Additionally, GitHub is used for version control and web hosting, allowing the site to be easily updated and shared.
 
 ## Acknowledgements
+At this time we would like to acknowledge:
+  - Mapbox
+  - VSCode
+  - Github
+  - Turf.js
+  - ChatGPT
+  - Claude.ai
+  - Github Copilot
 
-(Write something)
+We would like to give special thanks to:
+  - Professor Zhao
+  - Alex Kirchmeier
+  - Feedback and comments from Geography 328 classmates
+
+Images were from:
+- f
+- f
+- f
+- f
 
 ## AI Use Dislosure
-This project used ChatGPT and GitHub Copilot to help with coding. AI tools were mainly used for frontend development, including CSS for a modern, responsive design with glassmorphic effects and gradient backgrounds. They also helped integrate mapping libraries like Mapbox GL JS and Leaflet, add interactive map features, and create dynamic station listings. AI assisted with JavaScript functions such as distance calculations, geocoding, event handling, and popup displays. It also helped debug issues and optimize code. All major decisions about the project, including concept, data, features, and design, were made by the team, with AI only serving as a coding assistant.
+This project leveraged ChatGPT and GitHub Copilot to help with coding in unfamiliar areas and to help us explore our stylistic options. We used these programs for frontend development, such as adapting our CSS. It helped us create a modern, responsive design that included glassmorphic effects and gradient backgrounds. AI assisted us in integrating JavaScript functions such as distance calculations, geocoding, event handling, and popup displays. These were elements we first implemented, and then used AI tools to help in debugging and to optimize the code. All major design decisions about the project, including concepts, data, features, and style, were made by the team.
 
 ## Additional Notes
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-To update our local repositories using the cmd prompt, see 
-[Lab 1 Instructions](https://github.com/jakobzhao/geog328/tree/main/labs/lab01)
+This webpage is a prototype design made for our Geography 328 Final Project. To this end, we incorporate several tutorial-based elements as well as AI assistance to compose our functions, page structure, and features. In creating this project we hoped to explore the possibilities of an application based on Electric Vehicle Charging Infrastructure information. If this project is used for more official purposes, we would like to expand our design language and improve our offered features. 
